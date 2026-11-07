@@ -13,7 +13,8 @@ Study 的公開產品介紹網站。
 - `index.html`：頁面內容與搜尋／分享資訊
 - `style.css`：桌機、平板與手機排版
 - `app.js`：規劃分頁、圖片與影片視窗
-- `assets/`：公開展示圖片與影片
+- `assets/`：公開展示圖片與影片（目前短片為 21 秒、1080p、60 fps）
+- `design/film.html`：產品短片的 Canvas 分鏡與動畫原始碼
 
 GitHub Pages 使用 `main` 分支根目錄。推送更新後會自動發布；`.nojekyll` 保留靜態資源原貌。
 

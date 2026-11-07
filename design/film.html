@@ -1,0 +1,37 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>Study 產品短片製作</title><style>*{margin:0}body{background:#fafaf7}canvas{display:block;width:100vw;height:auto}</style><canvas width="1920" height="1080" aria-label="Study 產品介紹動畫"></canvas><script>
+const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),W=1920,H=1080;
+const font='"Noto Sans CJK TC", "Microsoft JhengHei", sans-serif';
+const names=['writing','papers','ai','records','exams','timetable','recording','timer','calculator'];const imgs={};
+const clamp=x=>Math.max(0,Math.min(1,x)),smooth=x=>{x=clamp(x);return x*x*(3-2*x)},out=x=>1-Math.pow(1-clamp(x),3);
+function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function text(s,x,y,size=30,color='#263b2e',weight=500){ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(s,x,y)}
+function animatedText(s,x,y,size,local,delay,color,weight){const a=out((local-delay)/.48);ctx.save();ctx.globalAlpha*=a;text(s,x,y+(1-a)*24,size,color,weight);ctx.restore()}
+function device(name,x,y,w,angle=0,reveal=1){const im=imgs[name],h=w*im.height/im.width;ctx.save();ctx.globalAlpha*=reveal;ctx.translate(x+w/2,y+h/2+(1-reveal)*40);ctx.rotate(angle);ctx.shadowColor='#263b2e32';ctx.shadowBlur=48;ctx.shadowOffsetY=22;ctx.fillStyle='#333c34';round(-w/2-8,-h/2-8,w+16,h+16,26);ctx.fill();ctx.shadowColor='transparent';round(-w/2,-h/2,w,h,18);ctx.clip();ctx.drawImage(im,-w/2,-h/2,w,h);ctx.restore()}
+function background(t){ctx.fillStyle='#fafaf7';ctx.fillRect(0,0,W,H);for(const [x,y,r,c]of [[1470+Math.sin(t*.35)*35,460,660,'#dce7d7'],[1180,780,470,'#eee1c8']]){const g=ctx.createRadialGradient(x,y,20,x,y,r);g.addColorStop(0,c);g.addColorStop(1,'#fafaf700');ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}ctx.strokeStyle='#8c9e7d1b';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(1430,500,460,405,-.2+t*.007,0,Math.PI*2);ctx.stroke()}
+const scenes=[
+{duration:2.4,tag:'STUDY',title:['把想法寫下來。','把學習留住。'],body:['手寫筆記與讀書規劃。'],shots:['writing']},
+{duration:2.8,tag:'01 / 手寫與 PDF',title:['從第一筆，','寫出自己的理解。'],body:['筆跡、文字、圖形。都在你的紙上。'],shots:['papers','writing']},
+{duration:2.8,tag:'02 / 問 AI',title:['選好重點。','帶著問題，繼續想。'],body:['免手動截圖，常用指令一次備好。'],shots:['ai'],note:'Study 準備附件；回答由你選擇的外部 AI App 提供。'},
+{duration:2.6,tag:'03 / 讀書紀錄',title:['你專心閱讀。','Study 幫你記得。'],body:['閱讀時間與頁數，自動留下來。'],shots:['records'],note:'畫面為示範紀錄，五科合計 10 小時。'},
+{duration:2.8,tag:'04 / 課業規劃',title:['考試、作業、課表。','安排一目了然。'],body:['掌握進度，也掌握這個學期。'],shots:['exams','timetable']},
+{duration:2.2,tag:'05 / 課堂錄音',title:['把聲音留住。','把重點聽懂。'],body:['回放、調整倍速，再聽一次。'],shots:['recording']},
+{duration:3.2,tag:'06 / 隨手工具',title:['計時。運算。','思考不用切換。'],body:['把常用工具，留在筆記旁。'],shots:['timer','calculator']},
+{duration:2.2,tag:'STUDY',title:['下一頁，','從你的想法開始。'],body:['Study：手寫筆記與讀書規劃'],shots:['writing'],end:true}
+];
+let elapsed=0;for(const s of scenes){s.start=elapsed;elapsed+=s.duration}window.filmDuration=elapsed;
+function scene(index,local,alpha){const s=scenes[index],p=clamp(local/s.duration);ctx.save();ctx.globalAlpha=alpha;
+ animatedText(s.tag,130,210,20,local,0,'#6c8261',600);
+ s.title.forEach((line,i)=>animatedText(line,125,375+i*108,70,local,.07+i*.09,'#263b2e',600));
+ s.body.forEach((line,i)=>animatedText(line,130,650+i*48,28,local,.24,'#697661',400));
+ const enter=out(local/.6),drift=smooth(p)*25;
+ if(s.shots.length===1){const zoom=1+smooth(p)*.025;device(s.shots[0],1110-drift*.4,132-drift*.8,520*zoom,-.025+smooth(p)*.018,enter)}
+ else{device(s.shots[0],1050-drift*.65,180-drift,350,-.045+smooth(p)*.015,enter);device(s.shots[1],1430-drift*.3,245-drift*.65,350*(1+smooth(p)*.018),.035-smooth(p)*.015,out((local-.32)/.65))}
+ if(s.end){const a=out((local-.35)/.4);ctx.globalAlpha=alpha*a;ctx.fillStyle='#365c49';round(130,755,300,64,32);ctx.fill();text('在 App Store 探索',169,798,24,'#fff',500);text('iPad · iPhone',130,870,23,'#65785c',400);ctx.globalAlpha=alpha}
+ else{ctx.lineCap='round';ctx.strokeStyle='#91a782';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(130,770);ctx.bezierCurveTo(170,762,210,778,260,768);ctx.setLineDash([140*clamp((local-.35)/.7),500]);ctx.stroke();ctx.setLineDash([])}
+ if(s.note)animatedText(s.note,130,915,18,local,.3,'#6e7c64',400);
+ ctx.restore()}
+window.ready=Promise.all(names.map(n=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>{imgs[n]=i;resolve()};i.onerror=reject;i.src='../assets/'+n+(n==='calculator'?'-1041':'')+'.webp'}))).then(()=>document.fonts.ready);
+window.render=t=>{t=Math.max(0,Math.min(elapsed-.001,t));background(t);let i=scenes.findIndex(s=>t<s.start+s.duration);if(i<0)i=scenes.length-1;const local=t-scenes[i].start,transition=.3;if(i>0&&local<transition){const a=smooth(local/transition);scene(i-1,scenes[i-1].duration,1-a);scene(i,local,a)}else scene(i,local,1);
+ ctx.fillStyle='#dce3d4';ctx.fillRect(130,1005,1660,2);ctx.fillStyle='#698461';ctx.fillRect(130,1005,1660*clamp(t/elapsed),2);text('Study',130,1050,18,'#64755c',600);text('實際 App 畫面 · 示範筆記',1510,1050,15,'#6c7b61',400)};
+window.ready.then(()=>window.render(1));
+</script></html>

@@ -51,3 +51,20 @@ h1{font-size:clamp(43px,4.3vw,65px);line-height:1.29;letter-spacing:-.065em}
  dialog{max-height:94dvh}.dialog-header{padding:6px 16px}
  #dialog-content video,#dialog-content img{max-height:calc(94dvh - 85px)}
 }
+
+/* All planning stories stay visible, with a quiet alternating editorial layout. */
+.planner-expanded .planner-panel{min-height:0;padding:48px 0 64px;gap:64px}
+.planner-expanded .planner-panel+.planner-panel{border-top:1px solid #ced8c8;padding-top:74px}
+.planner-expanded .planner-panel:last-child{padding-bottom:0}
+.planner-label{display:block;color:#496b50;font-size:13px;letter-spacing:.08em;margin-bottom:22px}
+.planner-expanded .planner-device{width:min(370px,100%)}
+@media(min-width:701px){
+ .planner-expanded .planner-panel:nth-child(even) .planner-copy{grid-column:2;grid-row:1}
+ .planner-expanded .planner-panel:nth-child(even) .planner-device{grid-column:1;grid-row:1}
+}
+@media(max-width:700px){
+ .planner-expanded .planner-panel{padding:24px 0 46px;gap:30px}
+ .planner-expanded .planner-panel+.planner-panel{padding-top:46px}
+ .planner-expanded .planner-device{width:min(300px,90%)}
+ .planner-label{font-size:12px;margin-bottom:16px}
+}
