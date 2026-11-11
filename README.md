@@ -1,6 +1,6 @@
-# Study — 手寫筆記與讀書規劃
+# Studitude — 手寫筆記與讀書規劃
 
-Study 的公開產品介紹網站。
+Studitude 的公開產品介紹網站。
 
 **網站：** https://andyhsuan.github.io/Study-Website/
 
